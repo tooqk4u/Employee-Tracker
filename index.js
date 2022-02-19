@@ -16,9 +16,9 @@ console.log(
       lineChars: 10,
       padding: 3,
       margin: 2,
-      borderColor: 'purple',
-      logoColor: 'bold-red',
-      textColor: 'green',
+      borderColor: 'bold-blue',
+      logoColor: 'bold-green',
+      textColor: 'purple',
   })
       .emptyLine()
       .right('@tooqk4u')
