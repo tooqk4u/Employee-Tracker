@@ -5,8 +5,8 @@ const Role = require('./lib/Role');
 const Department = require('./lib/Department');
 //const figlet = require('figlet');
 //const connection = require('./db/database');
-const cTable = require("console.table");
-const logo = require("asciiart-logo");
+const cTable = require('console.table');
+const logo = require('asciiart-logo');
 //var chalk = require("chalk");
 
 console.log(
