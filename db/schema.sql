@@ -3,7 +3,7 @@ CREATE TABLE employee (
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
     role_id INTEGER,
-    manager VARCHAR(30) NOT NULL    
+    manager VARCHAR(30) NULL    
 );
 
 CREATE TABLE role (

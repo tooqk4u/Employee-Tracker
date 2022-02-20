@@ -181,9 +181,199 @@ const promptQuestions = () => {
       });
       
   }
-  
+  function addEmployee() {
+    connection.promise().query(`
+    SELECT role.id, role.title FROM role
+    `)
+    .then(([rows])=> {
+        var roles = rows.map(({id, title}) => ({
+            name: title,
+            value: id
+            
+        }));
+    
+        console.log(rows)
+        return inquirer.prompt([
+
+            {
+                type: 'input',
+                name: 'firstname',
+                message: 'Provide employee FIRST NAME',
+                validate: firstNameInput => {
+                    if (firstNameInput) {
+                        return true;
+                    } else {
+                        console.log('Please enter FIRST NAME!');
+                        return false;
+                    }
+                }
+            },
+            {
+                type: 'input',
+                name: 'lastname',
+                message: 'Provide employee LAST NAME',
+                validate: lastNameInput => {
+                    if (lastNameInput) {
+                        return true;
+                    } else {
+                        console.log('Please enter LAST NAME')
+                    }
+                }
+
+            },
+            {
+                type: 'list',
+                name: 'roleselect',
+                message: 'Provide select a ROLE',
+                choices: roles
+
+            },
+        ])
+            .then(({firstname, lastname, roleselect}) => {
+                
+
+                console.log('updating employee');
+                const sql = `INSERT INTO employee (first_name, last_name, role_id) VALUES (?, ?, ?)`;
+                const params = [firstname, lastname, roleselect];
+                connection.query(sql, params, function (err, res) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    
+                });
+                viewEmployees()
+
+            console.log(chalk.yellow.bold(`====================================================================================`));
+            console.log(`                              ` + chalk.green.bold(`Successfully Added Employee`));
+            console.log(chalk.yellow.bold(`====================================================================================`));
+        
+            })
+
+        })
+};
+
 
   
+
+  function addRole() {
+    connection
+      .promise()
+      .query(
+        `
+    SELECT department.name, department.id FROM department
+    `
+      )
+      .then(([rows]) => {
+        var departments = rows.map(({ name, id }) => ({
+          name: name,
+          value: id,
+        }));
+
+        console.log(rows);
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "roletitle",
+              message: "Provide a new Role TITLE",
+              validate: (roleTitleInput) => {
+                if (roleTitleInput) {
+                  return true;
+                } else {
+                  console.log("Please enter a Role TITLE!");
+                  return false;
+                }
+              },
+            },
+            {
+              type: "input",
+              name: "rolesalary",
+              message: "Provide a new Role SALARY",
+              validate: (roleSalaryInput) => {
+                if (roleSalaryInput) {
+                  return true;
+                } else {
+                  console.log("Please enter a Role SALARY");
+                }
+              },
+            },
+            {
+              type: "list",
+              name: "roledept",
+              message: "Provide select a DEPARTMENT",
+              choices: departments,
+            },
+          ])
+          .then(({ roletitle, rolesalary, roledept }) => {
+            console.log("updating Role");
+            const sql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`;
+            const params = [roletitle, rolesalary, roledept];
+            connection.query(sql, params, function (err, res) {
+              if (err) {
+                console.log(err);
+              }
+              console.log(`================
+                        SUCCESSFULLY added Role
+                        =============================`);
+            });
+            promptQuestions();
+          });
+      });
+  }
+
+  function updateRole() {
+    connection
+      .promise()
+      .query(
+        `
+    SELECT employee.last_name, employee.id, role.id, role.title 
+    FROM employee
+    LEFT JOIN role ON employee.role_id = role.id
+    `
+      )
+      .then(([rows]) => {
+        var employees = rows.map(({ last_name, id }) => ({
+          name: last_name,
+          value: id,
+        }));
+        var roles = rows.map(({ id, title }) => ({
+          name: title,
+          value: id,
+        }));
+
+        console.log(rows);
+        return inquirer
+          .prompt([
+            {
+              type: "list",
+              name: "employeelist",
+              message: "Select an Employee",
+              choices: employees,
+            },
+            {
+              type: "list",
+              name: "rolelist",
+              message: "Select a Role",
+              choices: roles,
+            },
+          ])
+          .then(({ employeelist, rolelist }) => {
+            console.log("updating Role");
+            const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
+            const params = [employeelist, rolelist];
+            connection.query(sql, params, function (err, res) {
+              if (err) {
+                console.log(err);
+              }
+              console.log(`=================================
+                                SUCCESSFULLY updated Role
+                            ==================================
+                    `);
+            });
+            promptQuestions();
+          });
+      });
+  }
 };
 
 promptQuestions();
