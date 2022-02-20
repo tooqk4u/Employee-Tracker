@@ -4,11 +4,14 @@ const Employee = require("./lib/Employee");
 const Role = require("./lib/Role");
 const Department = require("./lib/Department");
 const figlet = require('figlet');
-const connection = require("./db/connection");
+//const connection = require("./db/connection");
 const cTable = require("console.table");
 const logo = require("asciiart-logo");
 const { Server } = require("ws");
 const chalk = require("chalk");
+const promisemysql = require("promise-mysql");
+const { connectionProperties, connection } = require('./db/connection');
+
 
 
 
@@ -16,7 +19,7 @@ console.log(
   logo({
     name: "EMPLOYEE TRACKER",
     font: "Standard",
-    lineChars: 10,
+    lineChars: 18,
     padding: 3,
     margin: 2,
     borderColor: "bold-blue",
@@ -40,29 +43,28 @@ const promptQuestions = () => {
           "View all Employees",
           "View all Departments",
           "View all Roles",
-          "Add an Employee",
           "Add a Department",
+          "Add an Employee",
           "Add a Role",
           "Update a Role",
-          "Update Employee Manager",
           "Exit",
         ],
       },
     ])
     .then((choice) => {
-      if (choice.viewAll === "View ALL Employees") {
+      if (choice.viewAll === "View all Employees") {
         viewEmployees();
-      } else if (choice.viewAll === "View Departments") {
+      } else if (choice.viewAll === "View all Departments") {
         viewDepartment();
-      } else if (choice.viewAll === "View Roles") {
+      } else if (choice.viewAll === "View all Roles") {
         viewRoles();
-      } else if (choice.viewAll === "Add Employee") {
-        addEmployee();
-      } else if (choice.viewAll === "Add Department") {
+      } else if (choice.viewAll === "Add a Department") {
         addDepartment();
-      } else if (choice.viewAll === "Add Role") {
+      } else if (choice.viewAll === "Add an Employee") {
+        addEmployee();
+      } else if (choice.viewAll === "Add a Role") {
         addRole();
-      } else if (choice.viewAll === "Update Role") {
+      } else if (choice.viewAll === "Update a Role") {
         updateRole();
       } else {
           process.exit(0)
@@ -141,7 +143,46 @@ const promptQuestions = () => {
     );
   }
 
+  function addDepartment() {
+    return inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "departmentname",
+          message: "Provide a new DEPARTMENT",
+          validate: (departmentInput) => {
+            if (departmentInput) {
+              return true;
+            } else {
+              console.log("Please enter a Department name!");
+              return false;
+            }
+          },
+        },
+      ])
+      .then((storeDept) => {
+        const newDept = storeDept.departmentname;
+
+        console.log("updating Department");
+        const sql = `INSERT INTO department (name) VALUES (?)`;
+        const params = [newDept];
+        connection.query(sql, params, function (err, res) {
+          if (err) {
+            console.log(err);
+          }
+          
+        });
+        viewDepartment()
+
+        console.log(chalk.yellow.bold(`====================================================================================`));
+        console.log(`                              ` + chalk.green.bold(`Successfully Added Department`));
+        console.log(chalk.yellow.bold(`====================================================================================`));
+        
+      });
+      
+  }
   
+
   
 };
 
