@@ -3,14 +3,14 @@ const Manager = require("./lib/Manager");
 const Employee = require("./lib/Employee");
 const Role = require("./lib/Role");
 const Department = require("./lib/Department");
-//const figlet = require('figlet');
+const figlet = require('figlet');
 const connection = require("./db/connection");
 const cTable = require("console.table");
 const logo = require("asciiart-logo");
 const { Server } = require("ws");
-//let chalk = require("chalk");
+const chalk = require("chalk");
 
-const employeeData = [];
+
 
 console.log(
   logo({
@@ -68,6 +68,35 @@ const promptQuestions = () => {
       }
     });
 
+  function viewEmployees() {
+    console.log("Viewing all Employees");
+    //connection.query(`SELECT * FROM employee`,
+    connection.query(
+      `
+        SELECT 
+        employee.id AS ID,
+        employee.first_name AS FirstName,
+        employee.last_name AS LastName,
+        role.title AS Title, 
+        role.salary AS $alary,
+        department.name AS Department
+        FROM employee
+        LEFT JOIN role ON employee.role_id = role.id
+        LEFT JOIN department ON role.department_id = department.id
+        `,
+      function (err, res) {
+        if (err) throw err;
+        // Log all results of the SELECT statement
+
+        console.log(chalk.yellow.bold(`====================================================================================`));
+        console.log(`                              ` + chalk.green.bold(`Current Employees:`));
+        console.log(chalk.yellow.bold(`====================================================================================`));
+
+        console.table(res);
+        promptQuestions();
+      }
+    );
+  }
   
 };
 
