@@ -37,13 +37,14 @@ const promptQuestions = () => {
         name: "viewAll",
         message: "Select an option",
         choices: [
-          "View ALL Employees",
-          "View Departments",
-          "View Roles",
-          "Add Employee",
-          "Add Department",
-          "Add Role",
-          "Update Role",
+          "View all Employees",
+          "View all Departments",
+          "View all Roles",
+          "Add an Employee",
+          "Add a Department",
+          "Add a Role",
+          "Update a Role",
+          "Update Employee Manager",
           "Exit",
         ],
       },
@@ -55,12 +56,12 @@ const promptQuestions = () => {
         viewDepartment();
       } else if (choice.viewAll === "View Roles") {
         viewRoles();
+      } else if (choice.viewAll === "Add Employee") {
+        addEmployee();
       } else if (choice.viewAll === "Add Department") {
         addDepartment();
       } else if (choice.viewAll === "Add Role") {
         addRole();
-      } else if (choice.viewAll === "Add Employee") {
-        addEmployee();
       } else if (choice.viewAll === "Update Role") {
         updateRole();
       } else {
@@ -97,6 +98,50 @@ const promptQuestions = () => {
       }
     );
   }
+  function viewDepartment() {
+    console.log("viewing by Department");
+    connection.query(
+      `SELECT id, name
+            FROM department`,
+      function (err, res) {
+        if (err) throw err;
+
+        console.log(chalk.yellow.bold(`====================================================================================`));
+        console.log(`                              ` + chalk.green.bold(`Current Departments`));
+        console.log(chalk.yellow.bold(`====================================================================================`));
+
+        console.table(res);
+        promptQuestions();
+      }
+    );
+  }
+  function viewRoles() {
+    console.log("Viewing all ROLES");
+    connection.query(
+      `SELECT 
+            role.id AS ID,
+            role.title AS title,
+            role.salary AS $ALARY,
+            department.name AS department
+            FROM role
+            LEFT JOIN department ON role.department_id = department.id`,
+      function (err, res) {
+        if (err) throw err;
+
+        console.log(chalk.yellow.bold(`====================================================================================`));
+        console.log(`                              ` + chalk.green.bold(`Current Employee Roles`));
+        console.log(chalk.yellow.bold(`====================================================================================`));
+
+        
+
+
+        console.table(res);
+        promptQuestions();
+      }
+    );
+  }
+
+  
   
 };
 
