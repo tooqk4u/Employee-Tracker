@@ -156,7 +156,7 @@ const promptQuestions = () => {
         );
         console.log(
           `                              ` +
-            chalk.green.bold(`Current Employee Roles`)
+            chalk.green.bold(`Current Roles`)
         );
         console.log(
           chalk.yellow.bold(
@@ -371,8 +371,72 @@ const promptQuestions = () => {
           });
       });
   }
+  function updateRole() {
+    connection
+      .promise()
+      .query(
+        `
+    SELECT employee.last_name, employee.id, role.id, role.title 
+    FROM employee
+    LEFT JOIN role ON employee.role_id = role.id
+    `
+      )
+      .then(([rows]) => {
+        let employees = rows.map(({ last_name, id }) => ({
+          name: last_name,
+          value: id,
+        }));
+        let roles = rows.map(({ id, title }) => ({
+          name: title,
+          value: id,
+        }));
 
-  
+        console.log(rows);
+        return inquirer
+          .prompt([
+            {
+              type: "list",
+              name: "employeelist",
+              message: "Select an Employee",
+              choices: employees,
+            },
+            {
+              type: "list",
+              name: "rolelist",
+              message: "Select a Role",
+              choices: roles,
+            },
+          ])
+          .then(({ employeelist, rolelist }) => {
+            console.log("updating Role");            
+            const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
+            const params = [employeelist, rolelist];
+            connection.query(sql, params, function (err, res) {
+              if (err) {
+                console.log(err);
+              }
+            });
+            viewEmployees()
+
+            console.log(
+              chalk.yellow.bold(
+                `================================================================================`
+              )
+            );
+            console.log(
+              `                              ` +
+                chalk.green.bold(`Successfully Updated Role`)
+            );
+            console.log(
+              chalk.yellow.bold(
+                `================================================================================`
+              )
+            );
+            
+            
+          });
+      });
+  }
 };
 
 promptQuestions();
