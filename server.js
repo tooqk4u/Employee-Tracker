@@ -55,6 +55,8 @@ const promptQuestions = () => {
         viewDepartment();
       } else if (choice.viewAll === "View all Roles") {
         viewRoles();
+      } else if (choice.viewAll === "Delete a Department") {
+        deleteDepartment();
       } else if (choice.viewAll === "Add a Department") {
         addDepartment();
       } else if (choice.viewAll === "Add an Employee") {
@@ -95,7 +97,7 @@ const promptQuestions = () => {
         );
         console.log(
           `                              ` +
-            chalk.green.bold(`Current Employees:`)
+            chalk.green.bold(`Current Employees`)
         );
         console.log(
           chalk.yellow.bold(
@@ -155,8 +157,7 @@ const promptQuestions = () => {
           )
         );
         console.log(
-          `                              ` +
-            chalk.green.bold(`Current Roles`)
+          `                              ` + chalk.green.bold(`Current Roles`)
         );
         console.log(
           chalk.yellow.bold(
@@ -169,6 +170,15 @@ const promptQuestions = () => {
       }
     );
   }
+
+  //function viewByManager() {
+   // console.log("Viewing Employee by Manager");
+    //const query = 'SELECT * FROM employee ORDER BY manager_id DESC';
+    //connection.query(query, (err, res) => {
+        //if (err) throw err;
+        //console.table(res);
+    
+  
 
   function addDepartment() {
     return inquirer
@@ -216,6 +226,7 @@ const promptQuestions = () => {
         );
       });
   }
+  
   function addEmployee() {
     connection
       .promise()
@@ -297,11 +308,7 @@ const promptQuestions = () => {
   function addRole() {
     connection
       .promise()
-      .query(
-        `
-  SELECT department.name, department.id FROM department
-  `
-      )
+      .query(`SELECT department.name, department.id FROM department  `)
       .then(([rows]) => {
         var departments = rows.map(({ name, id }) => ({
           name: name,
@@ -371,72 +378,67 @@ const promptQuestions = () => {
           });
       });
   }
+  
   function updateRole() {
-    connection
-      .promise()
-      .query(
-        `
+    connection.promise().query(`
     SELECT employee.last_name, employee.id, role.id, role.title 
     FROM employee
     LEFT JOIN role ON employee.role_id = role.id
-    `
-      )
-      .then(([rows]) => {
-        let employees = rows.map(({ last_name, id }) => ({
-          name: last_name,
-          value: id,
-        }));
-        let roles = rows.map(({ id, title }) => ({
-          name: title,
-          value: id,
-        }));
+    `)
+    .then(([rows])=> {
+        var employees = rows.map(({ last_name, id }) => ({
+            name: last_name,
+            value: id   
+        }))
+        var roles = rows.map(({ id, title }) => ({
+            name: title,
+            value: id
+        })
+        );
+    
+        console.log(rows)
+        return inquirer.prompt([
 
-        console.log(rows);
-        return inquirer
-          .prompt([
             {
-              type: "list",
-              name: "employeelist",
-              message: "Select an Employee",
-              choices: employees,
+                type: 'list',
+                name: 'employeelist',
+                message: 'Select an Employee',
+                choices: employees
             },
             {
-              type: "list",
-              name: "rolelist",
-              message: "Select a Role",
-              choices: roles,
-            },
-          ])
-          .then(({ employeelist, rolelist }) => {
-            console.log("updating Role");            
+                type: 'list',
+                name: 'rolelist',
+                message: 'Select a Role',
+                choices: roles
+            }
+        ])
+        .then(({employeelist, rolelist}) => {
+            
+
+            console.log('updating Role');
             const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
             const params = [employeelist, rolelist];
             connection.query(sql, params, function (err, res) {
-              if (err) {
-                console.log(err);
-              }
+                if (err) {
+                    console.log(err);
+                }
+                console.log(`=================================
+                                SUCCESSFULLY updated Role
+                            ==================================
+                    `);
             });
-            viewEmployees()
+            promptQuestions();
+        })
 
-            console.log(
-              chalk.yellow.bold(
-                `================================================================================`
-              )
-            );
-            console.log(
-              `                              ` +
-                chalk.green.bold(`Successfully Updated Role`)
-            );
-            console.log(
-              chalk.yellow.bold(
-                `================================================================================`
-              )
-            );
-            
-            
-          });
-      });
-  }
+    })
 };
+
+
+
+
+  };
+
+
+  
 
 promptQuestions();

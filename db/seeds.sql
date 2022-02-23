@@ -27,21 +27,21 @@ VALUES
   ('HR Manager', 50000, 6),
   ('HR Rep', 20000, 6);
 
-INSERT INTO employee (first_name, last_name, role_id, manager)
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES 
   ('Daniel', 'Jonson', 1, NULL),
-  ('Sean', 'Hanks', 2, 'Daniel Johnson'),
-  ('Kim', 'Jones', 3, 'Daniel Johnson'),
+  ('Sean', 'Hanks', 2, NULL),
+  ('Kim', 'Jones', 3, 2),
   ('Lisa', 'Sumset', 4, NULL),
-  ('Donald', 'Pick', 5, 'Lisa Sumset'),
+  ('Donald', 'Pick', 5, 3),
   ('Joan', 'Break', 6, NULL),
-  ('Cathy', 'Man', 7, 'Joan Break'),
-  ('Tom', 'Bell', 8, 'Joan Break'),
-  ('Oscar', 'Butter0', 9, 'Joan Break'),
+  ('Cathy', 'Man', 7, NULL),
+  ('Tom', 'Bell', 8, 5),
+  ('Oscar', 'Butter0', 9, 6),
   ('Paul', 'Spice', 10, NULL), 
-  ('Mel', 'Brown', 11, 'Daniel Johnson'), 
+  ('Mel', 'Brown', 11, 1), 
   ('Emma', 'Bunton', 12, NULL), 
-  ('Melanie', 'Chisolm', 13, 'Emma Bunton'), 
-  ('Geri', 'Hali', 14,'Emma Bunton'),
+  ('Melanie', 'Chisolm', 13, NULL), 
+  ('Geri', 'Hali', 14,3),
   ('Brian', 'Spears', 15, NULL),
-  ('Fred', 'Mac', 16, 'Brain Spears');
+  ('Fred', 'Mac', 16, 3);
