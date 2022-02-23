@@ -38,14 +38,14 @@ Keep track of your employees through back end databases through the use of MySQL
 ## Installation
 
 
-Install MySQL and Node Inquirer through the command line termainal. Type in "npm install --save mysql2" to install MySQL2 to your terminal. Then type "npm init -y" to install node.js. Then type "npm i inquirer" to install the inquirer node package.
+Install MySQL and Node Inquirer through the command line termainal. Type in "npm init" then install dependencies as needed such as MySQL2, chalk, asciiart-logo and inquirer" .
 
 ---
 ---
 
 ## Usage
 
-Once in the root directory after git cloning the repo, open terminal and type "mysql -u root -p" to open the mysql terminal line, then add your database by typing "CREATE DATABASE business" and then type "USE business". Then type "source db/schema.sql" and "source db/seeds.sql". To verify tables were created you can type "SHOW TABLES" then follow mysql prompts to open a table such as "SELECT * FROM employee;". Then type "quit" to go back to root command line and then to start prompts type "node index" or "node index.js" and follow the prompts.
+Once in the root directory after cloning the repo, open terminal and type "mysql -u root -p" to open the mysql terminal line, then add your database by typing "CREATE DATABASE employee_tracker" and then type "USE employee_tracker". Then type "source db/schema.sql" and "source db/seeds.sql". To verify tables were created you can type "SHOW TABLES" then follow mysql prompts to open a table such as "SELECT * FROM employee;". Then type "quit" to go back to root command line and then to start prompts type "node server" or "node server.js" and follow the prompts.
 
 ---
 ---
